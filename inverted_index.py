@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 
-from hazm import *
-from parsivar import *
+from hazm import Normalizer
+from parsivar import FindStems, Tokenizer
 import json
 
 from doc_pos import DocPos
@@ -9,13 +9,12 @@ from doc_pos import DocPos
 
 class DataPreprocess:
     all_data = {}
+
     def __init__(self):
         self.file_path = 'IR_data_news_12k.json'
 
-
     def read_data(self):
         contents = []
-        # file_path = 'IR_data_news_12k.json'
         flag = 0
         # num_of_data = 0
         with open(self.file_path, 'r') as f:
@@ -34,7 +33,8 @@ class DataPreprocess:
                 flag += 1
         return self.all_data, contents
 
-    def stemming(self, tokens):
+    @staticmethod
+    def stemming(tokens):
         stemmed = []
         my_stemmer = FindStems()
         for token in tokens:
@@ -45,7 +45,8 @@ class DataPreprocess:
     # def lemmatizing(tokens):
     #     lemmatizied = []
 
-    def stopwords_removing(self, tokens):
+    @staticmethod
+    def stopwords_removing(tokens):
         tokens_with_removed_stopwords = []
         stop_words = []
         file = open("stopwords.txt", encoding="utf-8")
