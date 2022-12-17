@@ -1,5 +1,5 @@
 class DocPos:
-    dict = {}
+    my_map = {}
 
     # docId = ""
     # positionsList = []
@@ -12,9 +12,13 @@ class DocPos:
     #     self.docId = doc_id
 
     def new_doc_id(self, doc_Id, position):
-        dict[doc_Id] = [position]
+        positions = []
+        positions.append(position)
+        self.my_map[doc_Id] = positions
+
+
 
     def add_position(self, doc_id, position):
         # self.positionsList.append(position)
-        positions = self.dict[doc_id]
+        positions = self.my_map[doc_id]
         positions.append(position)

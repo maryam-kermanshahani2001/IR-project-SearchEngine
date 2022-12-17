@@ -9,9 +9,9 @@ from doc_pos import DocPos
 
 class DataPreprocess:
     all_data = {}
+
     def __init__(self):
         self.file_path = 'IR_data_news_12k.json'
-
 
     def read_data(self):
         contents = []

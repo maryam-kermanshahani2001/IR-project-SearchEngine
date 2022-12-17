@@ -55,7 +55,7 @@ class DataPreprocess:
         my_normalizer = Normalizer()
         my_tokenizer = Tokenizer()
 
-        my_dictionary = {} # you can change it to a dictionary which means term id, term
+        my_dictionary = {}  # you can change it to a dictionary which means term id, term
         for doc_id, content in enumerate(contents):
             tokens_of_a_sentence = my_tokenizer.tokenize_words(my_normalizer.normalize(content))
             stemmed = self.stemming(tokens_of_a_sentence)
@@ -93,3 +93,9 @@ class DataPreprocess:
         # contents = []
         # contents = make_content_list(all_data)
         main_dictionary = self.tokenize(contents)
+
+
+if __name__ == '__main__':
+    data_proc = DataPreprocess()
+    data_proc.execute()
+    print("end")
