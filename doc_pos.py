@@ -7,16 +7,15 @@ class DocPos:
     def __init__(self):
         # self.doc_id = doc_id
         self.my_map = {}
-        self.positions = []
-        pass
+        # self.positions = []
+        # pass
 
     # def add_doc(self, doc_id):
     #     self.docId = doc_id
 
-    def new_doc_id(self, doc_Id, position):
-        # positions = []
-        self.positions.append(position)
-        self.my_map[doc_Id] = self.positions
+    def new_doc_id(self, doc_id, position):
+        positions = [position]
+        self.my_map[doc_id] = positions
 
     def add_position(self, doc_id, position):
         # self.positionsList.append(position)

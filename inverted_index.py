@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+import collections
 from hazm import Normalizer
 from parsivar import FindStems, Tokenizer
 import json
@@ -89,8 +90,9 @@ class DataPreprocess:
 
         return my_dictionary
 
-    def delete_stop_words(self):
-        pass
+    @staticmethod
+    def sort_tokens(input_dict):
+        return collections.OrderedDict(sorted(input_dict.items()))
 
     def execute(self):
         all_data = {}
@@ -99,9 +101,10 @@ class DataPreprocess:
         # contents = []
         # contents = make_content_list(all_data)
         main_dictionary = self.tokenize(contents)
-        for k in main_dictionary:
+        sorted_main_dictionary = self.sort_tokens(main_dictionary)
+        for k in sorted_main_dictionary:
             print("")
-            print(f'{k}-> {main_dictionary[k].my_map}')
+            print(f'{k}-> {sorted_main_dictionary[k].my_map}')
 
 
 if __name__ == '__main__':
