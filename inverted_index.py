@@ -68,9 +68,7 @@ class InvertedIndex:
         all_data = {}
         all_data, contents = self.read_data()
         print(all_data)
-        # contents = []
-        # contents = make_content_list(all_data)
-        main_dictionary = self.tokenize(contents)
+        main_dictionary = self.create_postings_list(contents)
         sorted_main_dictionary = self.sort_tokens(main_dictionary)
         for k in sorted_main_dictionary:
             print("")
@@ -78,7 +76,6 @@ class InvertedIndex:
         return sorted_main_dictionary
 
 
-# if __name__ == '__main__':
-#     data_proc = DataPreprocess()
-#     data_proc.execute()
-#     print("end")
+# ii = InvertedIndex()
+# ii.execute()
+# print("end")

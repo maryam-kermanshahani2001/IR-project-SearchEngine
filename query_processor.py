@@ -1,14 +1,22 @@
+from preprocess import DataPreprocess
 
 
 class QueryProcess:
     def __init__(self):
-        pass
+        self.preprocess = DataPreprocess()
 
-    @staticmethod
-    def execute(query, postings_list):
-        query_words_list = query.split(' ')
-        if len(query_words_list) == 1:
+    def query_preprocess(self, query):
+        normalized_query = self.preprocess.normalizing(query)
+        tokens_of_query = self.preprocess.tokenizing(normalized_query)
+        stemmed_query = self.preprocess.stemming(tokens_of_query)
+        removed_stopwords_query = self.preprocess.stopwords_removing(stemmed_query)
+        return self.preprocess.lemmatizing(removed_stopwords_query)
+
+    def execute(self, query, postings_list):
+        processed_query_list = self.query_preprocess(query)
+        if len(processed_query_list) == 1:
+            print(processed_query_list[0])
             for term in postings_list:
-                if term == query_words_list[0]:
+                if term == processed_query_list[0]:
                     return postings_list[term].my_map
 
