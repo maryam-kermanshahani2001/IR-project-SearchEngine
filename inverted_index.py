@@ -1,18 +1,18 @@
 from __future__ import unicode_literals
 
 import collections
-from hazm import Normalizer
-from parsivar import FindStems, Tokenizer
 import json
+from preprocess import DataPreprocess
 
 from doc_pos import DocPos
 
 
-class DataPreprocess:
-    all_data = {}
+class InvertedIndex:
 
     def __init__(self):
+        self.all_data = {}
         self.file_path = 'IR_data_news_12k.json'
+        self.preprocess = DataPreprocess()
 
     def read_data(self):
         contents = []
@@ -34,40 +34,14 @@ class DataPreprocess:
                 flag += 1
         return self.all_data, contents
 
-    @staticmethod
-    def stemming(tokens):
-        stemmed = []
-        my_stemmer = FindStems()
-        for token in tokens:
-            stemmed.append(my_stemmer.convert_to_stem(token))
-        return stemmed
-
-    #
-    # def lemmatizing(tokens):
-    #     lemmatizied = []
-
-    @staticmethod
-    def stopwords_removing(tokens):
-        tokens_with_removed_stopwords = []
-        stop_words = []
-        file = open("stopwords.txt", encoding="utf-8")
-        stop_words = file.read().splitlines()
-        for token in tokens:
-            if not (token in stop_words):
-                tokens_with_removed_stopwords.append(token)
-        return tokens_with_removed_stopwords
-
-    def tokenize(self, contents):
-        my_normalizer = Normalizer()
-        my_tokenizer = Tokenizer()
-
+    def create_postings_list(self, contents):
         my_dictionary = {}  # you can change it to a dictionary which means term id, term
         for doc_id, content in enumerate(contents):
-            tokens_of_a_sentence = my_tokenizer.tokenize_words(my_normalizer.normalize(content))
-            stemmed = self.stemming(tokens_of_a_sentence)
-            stopwords_removed = self.stopwords_removing(stemmed)
-            final_tokens_of_a_sentence = stopwords_removed
-            # tokens_of_a_sentence = cont.tokenize()
+            normalized_contents = self.preprocess.normalizing(content)
+            tokens_of_a_sentence = self.preprocess.tokenizing(normalized_contents)
+            stemmed = self.preprocess.stemming(tokens_of_a_sentence)
+            removed_stopwords = self.preprocess.stopwords_removing(stemmed)
+            final_tokens_of_a_sentence = self.preprocess.lemmatizing(removed_stopwords)
             for index_of_a_token, token in enumerate(final_tokens_of_a_sentence):
 
                 # if token in my_dictionary.keys():
@@ -80,12 +54,8 @@ class DataPreprocess:
 
                 else:
                     temp = {}
-                    # list_temp = []
                     doc_pos = DocPos()
-                    # list_temp.append(index_of_a_token)
                     doc_pos.new_doc_id(doc_id, index_of_a_token)
-                    # doc_pos.add_position(doc_id, index_of_a_token)
-                    # temp[doc_id] = list_temp
                     my_dictionary[token] = doc_pos
 
         return my_dictionary
@@ -105,9 +75,10 @@ class DataPreprocess:
         for k in sorted_main_dictionary:
             print("")
             print(f'{k}-> {sorted_main_dictionary[k].my_map}')
+        return sorted_main_dictionary
 
 
-if __name__ == '__main__':
-    data_proc = DataPreprocess()
-    data_proc.execute()
-    print("end")
+# if __name__ == '__main__':
+#     data_proc = DataPreprocess()
+#     data_proc.execute()
+#     print("end")

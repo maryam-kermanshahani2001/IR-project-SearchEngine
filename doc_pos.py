@@ -18,6 +18,5 @@ class DocPos:
         self.my_map[doc_id] = positions
 
     def add_position(self, doc_id, position):
-        # self.positionsList.append(position)
         positions = self.my_map[doc_id]
         positions.append(position)
