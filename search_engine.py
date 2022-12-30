@@ -14,4 +14,4 @@ class SearchEngine:
 
 
 se = SearchEngine()
-se.execute('گرامیداشت کرونا')
+se.execute('"گرامیداشت کرونا"')
