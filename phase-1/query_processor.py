@@ -1,4 +1,6 @@
 import re
+import sys
+
 from preprocessor import DataPreprocess
 
 
@@ -121,4 +123,35 @@ class QueryProcess:
 
         return containing_list
 
+    def phrase_process(self, query_postings_list, inverted_index):
 
+        match = []
+        finger = sys.maxsize
+        max_index = 0
+        for q in query_postings_list:
+            if q in inverted_index.keys():
+                doc_pos_object = inverted_index.get(q)
+                doc_pos_object_my_map = doc_pos_object.my_map
+                resultList = list(map(list, doc_pos_object_my_map.items()))
+                match.append(resultList)
+                if list(doc_pos_object_my_map.keys())[0] < finger:
+                    finger = list(doc_pos_object_my_map.keys())[0]
+                if list(doc_pos_object_my_map.keys())[-1] > max_index:
+                    max_index = list(doc_pos_object_my_map.keys())[-1]
+        result = {}
+        pointers = [0] * len(match)
+        while finger <= max_index:
+            count = 0
+            for i in range(len(match)):
+                if pointers[i] < len(match[i]) and finger == match[i][pointers[i]]:
+                    pointers[i] += 1
+                    count += 1
+            doc_id_list = result.get(count, [])
+            result[count] = sorted(doc_id_list + [finger])
+            min = max_index + 1
+            for i in range(len(match)):
+                if pointers[i] < len(match[i]) and match[i][pointers[i]] < min:
+                    min = match[i][pointers[i]]
+            finger = min
+
+        result = {k: v for k, v in reversed(sorted(result.items(), key=lambda item: item[0]))}
