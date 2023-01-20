@@ -2,7 +2,9 @@ from __future__ import unicode_literals
 
 import collections
 import json
-from preprocess import DataPreprocess
+
+from plot import Plot
+from preprocessor import DataPreprocess
 
 from doc_pos import DocPos
 
@@ -11,8 +13,8 @@ class InvertedIndex:
 
     def __init__(self):
         self.all_data = {}
-        self.file_path = 'IR_data_news_12k.json'
-        self.preprocess = DataPreprocess()
+        self.file_path = '../IR_data_news_12k.json'
+        self.preprocessor = DataPreprocess()
 
     def read_data(self):
         contents = []
@@ -21,7 +23,7 @@ class InvertedIndex:
         with open(self.file_path, 'r') as f:
             data = json.load(f)
             for k in data.keys():
-                if flag >= 10:
+                if flag >= 100:
                     break
                 # print(k)
                 # print(data[k])
@@ -37,11 +39,16 @@ class InvertedIndex:
     def create_postings_list(self, contents):
         my_dictionary = {}  # you can change it to a dictionary which means term id, term
         for doc_id, content in enumerate(contents):
-            normalized_contents = self.preprocess.normalizing(content)
-            tokens_of_a_sentence = self.preprocess.tokenizing(normalized_contents)
-            stemmed = self.preprocess.stemming(tokens_of_a_sentence)
-            removed_stopwords = self.preprocess.stopwords_removing(stemmed)
-            final_tokens_of_a_sentence = self.preprocess.lemmatizing(removed_stopwords)
+            final_tokens_of_a_sentence = self.preprocessor.preprocess(content)
+
+            # if doc_id == 5:
+            #     print(punctuated_content)
+            #     print(normalized_content)
+            #     print(tokens_of_a_sentence)
+            #     print(stemmed)
+            #     print(removed_stopwords)
+            #     print(final_tokens_of_a_sentence)
+
             for index_of_a_token, token in enumerate(final_tokens_of_a_sentence):
 
                 # if token in my_dictionary.keys():
@@ -53,7 +60,6 @@ class InvertedIndex:
                         doc_pos_of_token.new_doc_id(doc_id, index_of_a_token)
 
                 else:
-                    temp = {}
                     doc_pos = DocPos()
                     doc_pos.new_doc_id(doc_id, index_of_a_token)
                     my_dictionary[token] = doc_pos
@@ -67,14 +73,26 @@ class InvertedIndex:
     def execute(self):
         all_data = {}
         all_data, contents = self.read_data()
+
         print(all_data)
+
         main_dictionary = self.create_postings_list(contents)
         sorted_main_dictionary = self.sort_tokens(main_dictionary)
+
         for k in sorted_main_dictionary:
             print("")
             print(f'{k}-> {sorted_main_dictionary[k].my_map}')
-        return sorted_main_dictionary
+            for val in sorted_main_dictionary[k].my_map.keys():
+                v = f"{val}"
+                print(f' {all_data[v]["url"]} + {all_data[v]["title"]}')
 
+        print("------------------------------***************--------------------------------------------")
+        plot = Plot(contents)
+        plot.paint_zipf_plot()
+        plot.heaps_law_without_stemming()
+        plot.heaps_law_with_stemming()
+
+        return sorted_main_dictionary
 
 # ii = InvertedIndex()
 # ii.execute()

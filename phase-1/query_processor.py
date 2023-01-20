@@ -1,5 +1,5 @@
 import re
-from preprocess import DataPreprocess
+from preprocessor import DataPreprocess
 
 
 class QueryProcess:
