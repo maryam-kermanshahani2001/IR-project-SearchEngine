@@ -53,6 +53,8 @@ class Plot:
         # plt.hist2d(rank_log, cf_log)
         plt.plot(rank_log, cf_log)
         # plt.plot(ranks, cfs)
+        # print(sorted_dictionary_by_freq)
+
         plt.ylabel("log(cf)")
         plt.xlabel("log(rank)")
         plt.title(title)
@@ -67,11 +69,18 @@ class Plot:
     def heaps_law_without_stemming(self):
         all_tokens = []
         terms_set = set()
-        for content in self.contents:
+        heaps_question_result = {}
+
+        for i, content in enumerate(self.contents):
+
             tokens_of_a_sentence = self.preprocess.tokenizing(content)
             for t in tokens_of_a_sentence:
                 all_tokens.append(t)
                 terms_set.add(t)
+
+            if i == 500 or i == 1000 or i == 1500 or i == 2000:
+                heaps_question_result[i] = [len(all_tokens), len(terms_set)]
+        print(heaps_question_result)
 
         print("Heaps law without stemming")
         print(len(all_tokens))
@@ -80,13 +89,18 @@ class Plot:
     def heaps_law_with_stemming(self):
         all_tokens = []
         terms_set = set()
-        for content in self.contents:
+        heaps_question_result = {}
+
+        for i, content in enumerate(self.contents):
             tokens_of_a_sentence = self.preprocess.tokenizing(content)
             stemmed = self.preprocess.stemming(tokens_of_a_sentence)
             for t in stemmed:
                 all_tokens.append(t)
                 terms_set.add(t)
+            if i == 500 or i == 1000 or i == 1500 or i == 2000:
+                heaps_question_result[i] = [len(all_tokens), len(terms_set)]
+        print(heaps_question_result)
 
         print("Heaps law with stemming")
-        print(len(all_tokens))
-        print(len(terms_set))
+        print(f" Real T (All tokens size) = {len(all_tokens)}")
+        print(f" Real M (Vocabulary size) = {len(terms_set)}")

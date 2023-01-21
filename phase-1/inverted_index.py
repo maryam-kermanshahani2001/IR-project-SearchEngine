@@ -23,8 +23,8 @@ class InvertedIndex:
         with open(self.file_path, 'r') as f:
             data = json.load(f)
             for k in data.keys():
-                if flag >= 100:
-                    break
+                # if flag >= 100:
+                #     break
                 # print(k)
                 # print(data[k])
                 idx = k + ''  # to make the id string as the json file
@@ -33,7 +33,7 @@ class InvertedIndex:
                                       'url': data[idx]['url'],
                                       }
                 contents.append(data[idx]['content'])
-                flag += 1
+                # flag += 1
         return self.all_data, contents
 
     def create_postings_list(self, contents):
@@ -74,7 +74,12 @@ class InvertedIndex:
         all_data = {}
         all_data, contents = self.read_data()
 
-        print(all_data)
+        # print(all_data)
+
+        for k, v in all_data.items():
+            print(f"------doc id-------:{k}")
+            print(v)
+            print("")
 
         main_dictionary = self.create_postings_list(contents)
         sorted_main_dictionary = self.sort_tokens(main_dictionary)
@@ -86,7 +91,9 @@ class InvertedIndex:
                 v = f"{val}"
                 print(f' {all_data[v]["url"]} + {all_data[v]["title"]}')
 
+        print("")
         print("------------------------------***************--------------------------------------------")
+        print("")
         plot = Plot(contents)
         plot.paint_zipf_plot()
         plot.heaps_law_without_stemming()
