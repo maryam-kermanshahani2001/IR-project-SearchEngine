@@ -23,8 +23,8 @@ class InvertedIndex:
         with open(self.file_path, 'r') as f:
             data = json.load(f)
             for k in data.keys():
-                # if flag >= 100:
-                #     break
+                if flag >= 100:
+                    break
                 # print(k)
                 # print(data[k])
                 idx = k + ''  # to make the id string as the json file
@@ -33,7 +33,7 @@ class InvertedIndex:
                                       'url': data[idx]['url'],
                                       }
                 contents.append(data[idx]['content'])
-                # flag += 1
+                flag += 1
         return self.all_data, contents
 
     def create_postings_list(self, contents):

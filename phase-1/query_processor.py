@@ -267,10 +267,10 @@ class QueryProcess:
             for i, word in enumerate(words):
                 if i == 0:
                     continue
-            # flag0 = 1
-            # i = 1
-            # while flag0 != 0:
-            #     word = words[1]
+                # flag0 = 1
+                # i = 1
+                # while flag0 != 0:
+                #     word = words[1]
                 if doc == list(word)[doc_index_per_word[i]]:
                     if i == len(words) - 1:
                         for position in words[0].get(doc):
@@ -279,6 +279,8 @@ class QueryProcess:
                             j = 1
                             flag = 1
                             while flag != 0:
+                                if j >= len(words):
+                                    break
                                 pw = words[j]
                                 if position + j == pw.get(doc)[position_index_per_word[j]]:
                                     if j == len(words) - 1:
