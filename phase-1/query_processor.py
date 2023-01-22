@@ -78,7 +78,7 @@ class QueryProcess:
             return result
 
     @staticmethod
-    def process_phrase_query(query_list, inverted_index_dict):
+    def process_two_words_phrase_query(query_list, inverted_index_dict):
         combined_docs_dict_list = []
         combined_docs_list = []
         for i, query_term in enumerate(query_list):
@@ -113,17 +113,6 @@ class QueryProcess:
                     flag = 0
                     first_word_pos = positions[pos]
                     second_word_pos = positions[pos + 1]
-                    third_word_pos = positions[pos + 2]
-                    i = 0  # [1, 2]
-                    j = 0  # [3, 4, 5, 6]
-                    k = 0  # [0, 2, 4, 6]
-                    pointers = [0, 0, 0]
-                    if (first_word_pos[i] + 2) == (second_word_pos[j] + 1) == (third_word_pos[k]):
-                        flag = 1
-                    min_num_pos = min(first_word_pos[i], second_word_pos[j], (third_word_pos[k]))
-
-                    print(first_word_pos)
-                    print(second_word_pos)
                     for i in range(len(first_word_pos)):
                         if flag != 1:
                             for j in range(len(second_word_pos)):
@@ -284,99 +273,3 @@ class QueryProcess:
             containing_list = self.process_not_query(not_query_word, inverted_index_dict, containing_list)
 
         return containing_list
-
-    # def phrase_process(self, inverted_index, query):
-    #     # query_postings_list = {}
-    #     query_postings_map = {}
-    #     processed_query_list = self.query_preprocess(query)
-    #     for q in processed_query_list:
-    #         if q in inverted_index.keys():
-    #             doc_pos_object_my_map = inverted_index.get(q).my_map
-    #             # resultList = list(map(list, doc_pos_object_my_map.items()))
-    #             # query_postings_list[q] = resultList
-    #             query_postings_map[q] = doc_pos_object_my_map
-    #
-    #     match = []
-    #     finger = sys.maxsize
-    #     max_index = 0
-    #     start_index = 0
-    #     # for q in query:
-    #     for q, doc_pos_map in query_postings_map.items():
-    #         # if q in inverted_index.keys():
-    #         #     doc_pos_object = inverted_index.get(q)
-    #         #     doc_pos_object_my_map = doc_pos_object.my_map
-    #         #     resultList = list(map(list, doc_pos_object_my_map.items()))
-    #         #     match.append(resultList)
-    #         # doc_pos_list = list(doc_pos_map.keys())
-    #         match.append(doc_pos_map)
-    #         if list(doc_pos_map)[0] < finger:
-    #             finger =  list(doc_pos_map)[0]
-    #             start_index += 1
-    #         if  list(doc_pos_map)[-1] > max_index:
-    #             max_index =  list(doc_pos_map)[-1]
-    #
-    #     while finger <= max_index:
-
-    def phrase_query_search(self, inverted_index, query):
-        words = []
-        processed_query_list = self.query_preprocess(query)
-        for i, q in enumerate(processed_query_list):
-            if q in inverted_index.keys():
-                doc_pos_object_my_map = inverted_index.get(q).my_map
-                # result_list = list(map(list, doc_pos_object_my_map.items()))
-                # query_postings_list[q] = resultList
-                # words[q] = doc_pos_object_my_map
-                words.append(doc_pos_object_my_map)
-                # words[i] = result_list
-        # [{doc1: positions, doc2: positions}, {doc2:positions}, {doc5: positions}]
-        flag = 1
-        flag0 = 1
-        result = {}
-        for doc in words[0].keys():
-            doc_index_per_word = [0] * len(words)
-            for i, word in enumerate(words):
-                if i == 0:
-                    continue
-                # flag0 = 1
-                # i = 1
-                # while flag0 != 0:
-                #     word = words[1]
-                if doc == list(word)[doc_index_per_word[i]]:
-                    if i == len(words) - 1:
-                        for position in words[0].get(doc):
-                            position_index_per_word = [0] * len(words)
-
-                            j = 1
-                            flag = 1
-                            while flag != 0:
-                                if j >= len(words):
-                                    break
-                                pw = words[j]
-                                if position + j == pw.get(doc)[position_index_per_word[j]]:
-                                    if j == len(words) - 1:
-
-                                        temp_list = result.get(doc, [])
-                                        temp_list.append(position)
-                                        result[doc] = temp_list
-                                        # result[doc].append(position)
-                                        flag = 0  # or break
-                                        # todo 1 match found
-                                    else:
-                                        j += 1
-                                        continue
-                                else:
-                                    if position > pw.get(doc)[position_index_per_word[j]]:
-                                        position_index_per_word[j] += 1
-                                        continue
-                                    else:
-                                        flag = 0  # or break
-                    else:
-                        continue
-                else:
-                    if doc > list(word)[doc_index_per_word[i]]:
-                        doc_index_per_word[i] += 1
-                        continue
-                    else:
-                        break
-        print(result)
-
