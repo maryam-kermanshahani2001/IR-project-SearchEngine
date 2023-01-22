@@ -178,9 +178,13 @@ class QueryProcess:
                             j = 1
                             flag = 1
                             while flag != 0:
+                                if j >= len(words):
+                                    break
                                 if i == 0:
                                     continue
                                 pw = words[j]
+                                if position_index_per_word[j] >= len(pw.get(doc)):
+                                    break
                                 if position + j == pw.get(doc)[position_index_per_word[j]]:
                                     if j == len(words) - 1:
 
