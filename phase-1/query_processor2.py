@@ -5,7 +5,7 @@ import string
 from preprocessor import DataPreprocess
 
 
-class QueryProcess:
+class QueryProces:
     def __init__(self):
         self.preprocess = DataPreprocess()
 
@@ -160,71 +160,51 @@ class QueryProcess:
         # [{doc1: positions, doc2: positions}, {doc2:positions}, {doc5: positions}]
         flag = 1
         flag0 = 1
-        flag1 = 1
         result = {}
-        doc_index_per_word = [0] * len(words)
         for doc in words[0].keys():
-            position_index_per_word = [0] * len(words)
-
-            # for i, word in enumerate(words):
-            #     if i == 0:
-            #         continue
-            i = 1
-            flag1 = 1
-            while flag1 != 0:
-                word = words[i]
-                flag0 = 1
-
+            doc_index_per_word = [0] * len(words)
+            for i, word in enumerate(words):
+                if i == 0:
+                    continue
+                # flag0 = 1
+                # i = 1
+                # while flag0 != 0:
+                #     word = words[1]
                 if doc == list(word)[doc_index_per_word[i]]:
                     if i == len(words) - 1:
                         for position in words[0].get(doc):
-                            if flag0 == 0:
-                                break
+                            position_index_per_word = [0] * len(words)
+                            for j, pw in enumerate(words):
+                                if j == 0:
+                                    continue
 
-                            j = 1
-                            flag = 1
-                            while flag != 0:
-                                # if j >= len(words):
-                                #     break
-                                # if i == 0:
-                                #     continue
-                                pw = words[j]
-                                if position_index_per_word[j] >= len(pw.get(doc)):
-                                    doc_index_per_word[i] += 1
-                                    # i += 1
-                                    flag0 = 0
-                                    break
                                 if position + j == pw.get(doc)[position_index_per_word[j]]:
                                     if j == len(words) - 1:
 
                                         temp_list = result.get(doc, [])
                                         temp_list.append(position)
                                         result[doc] = temp_list
-                                        # doc_index_per_word[i] += 1
                                         # result[doc].append(position)
                                         flag = 0  # or break
                                         # todo 1 match found
                                     else:
-                                        j += 1
+                                        # j += 1
                                         continue
                                 else:
                                     if position > pw.get(doc)[position_index_per_word[j]]:
                                         position_index_per_word[j] += 1
                                         continue
                                     else:
-                                        # doc_index_per_word[i] += 1
                                         flag = 0  # or break
-                        # doc_index_per_word[i] += 1
-                        flag1 = 0
+                                        break
+
                     else:
-                        i += 1
                         continue
                 else:
                     if doc > list(word)[doc_index_per_word[i]]:
                         doc_index_per_word[i] += 1
                         continue
                     else:
-                        # flag1 = 0
                         break
         return list(result.keys())
 
@@ -338,125 +318,59 @@ class QueryProcess:
         for i, q in enumerate(processed_query_list):
             if q in inverted_index.keys():
                 doc_pos_object_my_map = inverted_index.get(q).my_map
+                # result_list = list(map(list, doc_pos_object_my_map.items()))
+                # query_postings_list[q] = resultList
+                # words[q] = doc_pos_object_my_map
                 words.append(doc_pos_object_my_map)
-
+                # words[i] = result_list
+        # [{doc1: positions, doc2: positions}, {doc2:positions}, {doc5: positions}]
         flag = 1
         flag0 = 1
-        flag2 = 1
-        flag3 = 1
-        flag_main = 1
         result = {}
-        doc_index_per_word = [0] * len(words)
         for doc in words[0].keys():
-            position_index_per_word = [0] * len(words)
-            flag2 = 1
-            # for i, word in enumerate(words):
-
-            # if i == 0:
-            #     continue
-            # if flag2 == 0:
-            #     break
-            flag0 = 1
-            i = 1
-            while flag0 != 0:
-                if flag2 == 0:
-                    break
-                word = words[1]
+            doc_index_per_word = [0] * len(words)
+            for i, word in enumerate(words):
+                if i == 0:
+                    continue
+                # flag0 = 1
+                # i = 1
+                # while flag0 != 0:
+                #     word = words[1]
                 if doc == list(word)[doc_index_per_word[i]]:
                     if i == len(words) - 1:
                         for position in words[0].get(doc):
+                            position_index_per_word = [0] * len(words)
 
                             j = 1
                             flag = 1
-                            flag3 = 1
-                            # for k, pw in enumerate(words):
-                            #     if k == 0:
-                            #         continue
-                            #     if flag3 == 0:
-                            #         break
                             while flag != 0:
-                                if flag3 == 0:
+                                if j >= len(words):
                                     break
-                                # if j >= len(words):
-                                #     break
-                                # if i == 0:
-                                #     continue
                                 pw = words[j]
-                                # pw = words[k]
-                                # if position_index_per_word[j] >= len(pw.get(doc)):
-                                #     break
                                 if position + j == pw.get(doc)[position_index_per_word[j]]:
-                                    # if position + k == pw.get(doc)[position_index_per_word[k]]:
                                     if j == len(words) - 1:
-                                        # if k == len(words) - 1:
 
                                         temp_list = result.get(doc, [])
                                         temp_list.append(position)
                                         result[doc] = temp_list
-                                        # position_index_per_word[k] += 1 #todo check if it is right
                                         # result[doc].append(position)
                                         flag = 0  # or break
                                         # todo 1 match found
                                     else:
                                         j += 1
-                                        # k += 1
                                         continue
                                 else:
                                     if position > pw.get(doc)[position_index_per_word[j]]:
-                                        # if position > pw.get(doc)[position_index_per_word[k]]:
-                                        # position_index_per_word[j] += 1
-                                        t = 1
-                                        while t:
-                                            if position_index_per_word[j] + 1 <= len(pw.get(doc)) - 1:
-                                                position_index_per_word[j] += 1
-                                            else:
-                                                if position + j != pw.get(doc)[position_index_per_word[j]]:
-                                                   flag3 = 0
-                                                t = 0
-                                                break
-                                            # if position > list(pw)[position_index_per_word[j]]:
-                                            if position + j == pw.get(doc)[position_index_per_word[j]]:
-                                                t = 0
-                                                break
-                                            if position + j < pw.get(doc)[position_index_per_word[j]]:
-                                                # flag2 = 0
-                                                flag3 = 0
-                                                break
-                                        # continue
-                                        # continue
+                                        position_index_per_word[j] += 1
+                                        continue
                                     else:
-                                        # flag = 0  # or break
-
-                                        break
-                        # here
-                        for n in range(len(words)):
-                            doc_index_per_word[n] += 1
-                        flag0 = 0
-
+                                        flag = 0  # or break
                     else:
-                        i += 1
                         continue
                 else:
                     if doc > list(word)[doc_index_per_word[i]]:
-
-                        t = 1
-                        while t:
-                            if doc_index_per_word[i] + 1 <= len(word) - 1:
-                                doc_index_per_word[i] += 1
-                            else:
-                                if doc != list(word)[doc_index_per_word[i]]:
-                                    flag2 = 0
-                                t = 0
-                                break
-                            if doc == list(word)[doc_index_per_word[i]]:
-                                t = 0
-                                break
-                            elif doc < list(word)[doc_index_per_word[i]]:
-                                # flag2 = 0
-                                flag2 = 0
-                                break
-
-                        # continue
+                        doc_index_per_word[i] += 1
+                        continue
                     else:
                         break
-        return list(result.keys())
+        print(result)
