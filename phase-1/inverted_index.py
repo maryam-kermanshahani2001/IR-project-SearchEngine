@@ -23,8 +23,11 @@ class InvertedIndex:
         with open(self.file_path, 'r') as f:
             data = json.load(f)
             for k in data.keys():
-                if flag >= 100:
-                    break
+            #     if flag <= 505:
+            #         flag += 1
+            #         continue
+            #     if flag >= 1001:
+            #         break
                 # print(k)
                 # print(data[k])
                 idx = k + ''  # to make the id string as the json file

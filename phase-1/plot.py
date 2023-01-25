@@ -1,6 +1,7 @@
 import math
 import matplotlib.pyplot as plt
 from preprocessor import DataPreprocess
+import numpy as np
 
 
 class Plot:
@@ -86,6 +87,24 @@ class Plot:
         print(len(all_tokens))
         print(len(terms_set))
 
+        title = "Without Stemming"
+        self.show_heaps_result_on_plot(heaps_question_result, len(terms_set), title)
+
+    def show_heaps_result_on_plot(self, res, dict_len, title):
+        x = np.array([math.log10(t[1]) for t in list(res.values())])
+        y = [math.log10(t[0]) for t in list(res.values())]
+        m, b = np.polyfit(x, y, 1)
+
+        plt.subplot(1, 2, 1)
+        plt.scatter(x, y, color='orange')
+        plt.plot(x, m * x + b)
+        plt.xlabel("log10 T")
+        plt.ylabel("log10 M")
+        plt.title(title)
+
+        plt.show()
+
+
     def heaps_law_with_stemming(self):
         all_tokens = []
         terms_set = set()
@@ -104,3 +123,5 @@ class Plot:
         print("Heaps law with stemming")
         print(f" Real T (All tokens size) = {len(all_tokens)}")
         print(f" Real M (Vocabulary size) = {len(terms_set)}")
+        title = "Without Stemming"
+        self.show_heaps_result_on_plot(heaps_question_result, len(terms_set), title)

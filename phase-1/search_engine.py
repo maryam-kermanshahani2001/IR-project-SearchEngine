@@ -13,9 +13,9 @@ class SearchEngine:
         # # docs = self.query_processor.execute(input_query, main_dict, )
         # print(docs[:10])
         postings_list = self.data_preprocess.execute()
-        docs = self.query_processor.phrase_query_search(postings_list, input_query)
-        print(docs)
-        print(docs[:10])
+        # docs = self.query_processor.phrase_query_search(postings_list, input_query)
+        # print(docs)
+        # print(docs[:10])
 
 
 se = SearchEngine()
@@ -29,6 +29,6 @@ se.execute('"شکست سنگین"')
 # se.execute(' باشگاه های فوتسال آسیا ')
 # se.execute('" مسابقات فوتبال "')
 # se.execute(' مسابقات  فوتبال ')
-se.execute(' اورشلیم ! صهیونیست ') # []
+# se.execute(' اورشلیم ! صهیونیست ') # []
 # se.execute('" مسابقات "')
 

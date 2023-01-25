@@ -28,8 +28,8 @@ class Phase2:
         with open(self.file_path, 'r') as f:
             data = json.load(f)
             for k in data.keys():
-                if flag >= 500:
-                    break
+                # if flag >= 1001:
+                #     break
                 # print(k)
                 # print(data[k])
                 idx = k + ''  # to make the id string as the json file
@@ -223,7 +223,16 @@ class Phase2:
                 v = f"{val}"
                 print(f' {all_data[v]["url"]} + {all_data[v]["title"]}')
 
-        q = "فوتسال آسیا"
+        q = "فوتبال آسیا"
+        self.test(q, all_data)
+        q = "جام باشگاه های آسیا"
+        self.test(q, all_data)
+        q = "بوندسلیگا"
+        self.test(q,all_data)
+        q = "پیمان رضایی و آیدین رحمانی"
+        self.test(q, all_data)
+
+    def test(self, q, all_data):
         self.create_query_freq_dictionary(q)
         scoress = self.find_similarity()
         print("")
