@@ -8,14 +8,11 @@ class SearchEngine:
         self.query_processor = QueryProcess()
 
     def execute(self, input_query):
-        # main_dict = self.data_preprocess.execute()
-        # docs = self.query_processor.execute(input_query, postings_list)
-        # # docs = self.query_processor.execute(input_query, main_dict, )
-        # print(docs[:10])
-        postings_list = self.data_preprocess.execute()
-        # docs = self.query_processor.phrase_query_search(postings_list, input_query)
-        # print(docs)
-        # print(docs[:10])
+        main_dict, contents, urls = self.data_preprocess.execute()
+        docs = self.query_processor.execute(input_query, main_dict)
+        for doc in docs[:10]:
+            print(urls[doc])
+            print(contents[doc])
 
 
 se = SearchEngine()

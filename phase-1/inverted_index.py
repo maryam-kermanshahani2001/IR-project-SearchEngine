@@ -18,6 +18,7 @@ class InvertedIndex:
 
     def read_data(self):
         contents = []
+        urls = []
         flag = 0
         # num_of_data = 0
         with open(self.file_path, 'r') as f:
@@ -36,8 +37,9 @@ class InvertedIndex:
                                       'url': data[idx]['url'],
                                       }
                 contents.append(data[idx]['content'])
+                urls.append(data[idx]['url'])
                 flag += 1
-        return self.all_data, contents
+        return self.all_data, contents, urls
 
     def create_postings_list(self, contents):
         my_dictionary = {}  # you can change it to a dictionary which means term id, term
@@ -75,7 +77,7 @@ class InvertedIndex:
 
     def execute(self):
         all_data = {}
-        all_data, contents = self.read_data()
+        all_data, contents, urls = self.read_data()
 
         # print(all_data)
 
