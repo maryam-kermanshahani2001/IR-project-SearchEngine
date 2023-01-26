@@ -212,7 +212,7 @@ class Phase2:
         # all_data = {}
         all_data, contents = self.read_data()
 
-        print(all_data)
+        # print(all_data)
 
         self.main_inv_index = self.create_inverted_index(contents)
         # print(dictionary)

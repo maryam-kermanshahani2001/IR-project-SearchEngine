@@ -123,5 +123,5 @@ class Plot:
         print("Heaps law with stemming")
         print(f" Real T (All tokens size) = {len(all_tokens)}")
         print(f" Real M (Vocabulary size) = {len(terms_set)}")
-        title = "Without Stemming"
+        title = "With Stemming"
         self.show_heaps_result_on_plot(heaps_question_result, len(terms_set), title)
