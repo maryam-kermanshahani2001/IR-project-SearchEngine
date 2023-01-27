@@ -77,70 +77,60 @@ class QueryProcess:
         else:
             return result
 
-    # @staticmethod
-    # def process_phrase_query(query_list, inverted_index_dict):
-    #     combined_docs_dict_list = []
-    #     combined_docs_list = []
-    #     for i, query_term in enumerate(query_list):
-    #         doc_pos_object = inverted_index_dict.get(query_term)
-    #         if doc_pos_object is None:
-    #             continue
-    #         combined_docs_dict_list.append(doc_pos_object.my_map)
-    #         combined_docs_list.append(list(doc_pos_object.my_map.keys()))
-    #     result_list = []
-    #     for doc_list in combined_docs_list:
-    #         if not result_list:
-    #             result_list = doc_list
-    #         else:
-    #             result_list = list(set(result_list) & set(doc_list))
-    #
-    #     doc_pos_dict = {}
-    #     for doc_id in result_list:
-    #         doc_id_positions = []
-    #         for doc_dict in combined_docs_dict_list:
-    #             if doc_id in doc_dict.keys():
-    #                 doc_id_positions.append(doc_dict[doc_id])
-    #         doc_pos_dict[doc_id] = doc_id_positions
-    #     # print(doc_pos_dict)
-    #     phrase_satisfaction_list = []
-    #
-    #     for doc in doc_pos_dict:
-    #         flag = 0
-    #         positions = doc_pos_dict[doc]
-    #         if positions:
-    #             print(positions)
-    #             for pos in range(len(positions) - 1):
-    #                 flag = 0
-    #                 first_word_pos = positions[pos]
-    #                 second_word_pos = positions[pos + 1]
-    #                 third_word_pos = positions[pos + 2]
-    #                 i = 0  # [1, 2]
-    #                 j = 0  # [3, 4, 5, 6]
-    #                 k = 0  # [0, 2, 4, 6]
-    #                 pointers = [0, 0, 0]
-    #                 if (first_word_pos[i] + 2) == (second_word_pos[j] + 1) == (third_word_pos[k]):
-    #                     flag = 1
-    #                 min_num_pos = min(first_word_pos[i], second_word_pos[j], (third_word_pos[k]))
-    #
-    #                 print(first_word_pos)
-    #                 print(second_word_pos)
-    #                 for i in range(len(first_word_pos)):
-    #                     if flag != 1:
-    #                         for j in range(len(second_word_pos)):
-    #                             if (first_word_pos[i]) > second_word_pos[j]:
-    #                                 continue
-    #                             if (first_word_pos[i]) < second_word_pos[j]:
-    #                                 if (first_word_pos[i] - second_word_pos[j]) == -1:
-    #                                     print(first_word_pos[i], second_word_pos[j])
-    #                                     flag = 1
-    #                                     break
-    #
-    #         if not positions:
-    #             flag = 0
-    #         if flag == 1:
-    #             phrase_satisfaction_list.append(doc)
-    #
-    #     return phrase_satisfaction_list
+    @staticmethod
+    def process_two_word_phrase_query(query_list, inverted_index_dict):
+        combined_docs_dict_list = []
+        combined_docs_list = []
+        for i, query_term in enumerate(query_list):
+            doc_pos_object = inverted_index_dict.get(query_term)
+            if doc_pos_object is None:
+                continue
+            combined_docs_dict_list.append(doc_pos_object.my_map)
+            combined_docs_list.append(list(doc_pos_object.my_map.keys()))
+        result_list = []
+        for doc_list in combined_docs_list:
+            if not result_list:
+                result_list = doc_list
+            else:
+                result_list = list(set(result_list) & set(doc_list))
+
+        doc_pos_dict = {}
+        for doc_id in result_list:
+            doc_id_positions = []
+            for doc_dict in combined_docs_dict_list:
+                if doc_id in doc_dict.keys():
+                    doc_id_positions.append(doc_dict[doc_id])
+            doc_pos_dict[doc_id] = doc_id_positions
+        # print(doc_pos_dict)
+        phrase_satisfaction_list = []
+
+        for doc in doc_pos_dict:
+            flag = 0
+            positions = doc_pos_dict[doc]
+            if positions:
+                print(positions)
+                for pos in range(len(positions) - 1):
+                    flag = 0
+                    first_word_pos = positions[pos]
+                    second_word_pos = positions[pos + 1]
+
+                    for i in range(len(first_word_pos)):
+                        if flag != 1:
+                            for j in range(len(second_word_pos)):
+                                if (first_word_pos[i]) > second_word_pos[j]:
+                                    continue
+                                if (first_word_pos[i]) < second_word_pos[j]:
+                                    if (first_word_pos[i] - second_word_pos[j]) == -1:
+                                        print(first_word_pos[i], second_word_pos[j])
+                                        flag = 1
+                                        break
+
+            if not positions:
+                flag = 0
+            if flag == 1:
+                phrase_satisfaction_list.append(doc)
+
+        return phrase_satisfaction_list
 
     def process_phrase_and_normal_query(self):
         pass
@@ -236,67 +226,70 @@ class QueryProcess:
         cleaned_query = query.translate(str.maketrans('', '', string.punctuation))
         processed_query_list = self.query_preprocess(cleaned_query)
 
-        non_phrase_words_list = []
-        if phrase_part_query:
-            for word in processed_query_list:
-                if word not in phrase_part_query[0]:
-                    non_phrase_words_list.append(word)
+        containing_list = self.process_two_word_phrase_query(processed_query_list, inverted_index_dict)
+        print(containing_list)
+        # non_phrase_words_list = []
+        # if phrase_part_query:
+        #     for word in processed_query_list:
+        #         if word not in phrase_part_query[0]:
+        #             non_phrase_words_list.append(word)
 
-        if non_phrase_words_list and (phrase_part_query != ''):
-            if (len(phrase_part_query[0].split()) == 1) and (len(non_phrase_words_list) == 1):
-                print("==")
-                containing_list = self.process_multi_word_query(processed_query_list, inverted_index_dict)
-
-            if (len(phrase_part_query[0].split()) > 1) and (len(non_phrase_words_list) == 1):
-                print(">=")
-                phrase_containing_list = self.process_phrase_query(phrase_part_query, inverted_index_dict)
-                non_containing_list = self.process_one_word_query(non_phrase_words_list, inverted_index_dict)
-                combined_docs_list = [phrase_containing_list, non_containing_list]
-
-                for doc_list in combined_docs_list:
-                    if not containing_list:
-                        containing_list = doc_list
-                    else:
-                        containing_list = list(set(containing_list) & set(doc_list))
-
-            if (len(phrase_part_query[0].split()) > 1) and (len(non_phrase_words_list) > 1):
-                print(">>")
-                phrase_containing_list = self.process_phrase_query(phrase_part_query, inverted_index_dict)
-                non_containing_list = self.process_multi_word_query(non_phrase_words_list, inverted_index_dict)
-                combined_docs_list = [phrase_containing_list, non_containing_list]
-                containing_list = []
-                for doc_list in combined_docs_list:
-                    if not containing_list:
-                        containing_list = doc_list
-                    else:
-                        containing_list = list(set(containing_list) & set(doc_list))
-
-            if (len(phrase_part_query[0].split()) == 1) and (len(non_phrase_words_list) > 1):
-                print("=>")
-                phrase_containing_list = self.process_one_word_query(phrase_part_query, inverted_index_dict)
-                non_containing_list = self.process_multi_word_query(non_phrase_words_list, inverted_index_dict)
-                combined_docs_list = [phrase_containing_list, non_containing_list]
-                containing_list = []
-                for doc_list in combined_docs_list:
-                    if not containing_list:
-                        containing_list = doc_list
-                    else:
-                        containing_list = list(set(containing_list) & set(doc_list))
-
-        else:
-            print("here")
-            if len(processed_query_list) == 1:
-                containing_list = self.process_one_word_query(processed_query_list, inverted_index_dict)
-
-            if phrase_part_query == '':
-                if len(processed_query_list) > 1:
-                    containing_list = self.process_multi_word_query(processed_query_list, inverted_index_dict)
-            if (phrase_part_query != '') and (len(phrase_part_query[0].split()) > 1):
-                print(phrase_part_query[0].split())
-                print("in phrase")
-                containing_list = self.process_phrase_query(processed_query_list, inverted_index_dict)
+        # if non_phrase_words_list and (phrase_part_query != ''):
+        #     if (len(phrase_part_query[0].split()) == 1) and (len(non_phrase_words_list) == 1):
+        #         print("==")
+        #         containing_list = self.process_multi_word_query(processed_query_list, inverted_index_dict)
+        #
+        #     if (len(phrase_part_query[0].split()) > 1) and (len(non_phrase_words_list) == 1):
+        #         print(">=")
+        #         phrase_containing_list = self.process_two_word_phrase_query(phrase_part_query, inverted_index_dict)
+        #         non_containing_list = self.process_one_word_query(non_phrase_words_list, inverted_index_dict)
+        #         combined_docs_list = [phrase_containing_list, non_containing_list]
+        #
+        #         for doc_list in combined_docs_list:
+        #             if not containing_list:
+        #                 containing_list = doc_list
+        #             else:
+        #                 containing_list = list(set(containing_list) & set(doc_list))
+        #
+        #     if (len(phrase_part_query[0].split()) > 1) and (len(non_phrase_words_list) > 1):
+        #         print(">>")
+        #         phrase_containing_list = self.process_two_word_phrase_query(phrase_part_query, inverted_index_dict)
+        #         non_containing_list = self.process_multi_word_query(non_phrase_words_list, inverted_index_dict)
+        #         combined_docs_list = [phrase_containing_list, non_containing_list]
+        #         containing_list = []
+        #         for doc_list in combined_docs_list:
+        #             if not containing_list:
+        #                 containing_list = doc_list
+        #             else:
+        #                 containing_list = list(set(containing_list) & set(doc_list))
+        #
+        #     if (len(phrase_part_query[0].split()) == 1) and (len(non_phrase_words_list) > 1):
+        #         print("=>")
+        #         phrase_containing_list = self.process_one_word_query(phrase_part_query, inverted_index_dict)
+        #         non_containing_list = self.process_multi_word_query(non_phrase_words_list, inverted_index_dict)
+        #         combined_docs_list = [phrase_containing_list, non_containing_list]
+        #         containing_list = []
+        #         for doc_list in combined_docs_list:
+        #             if not containing_list:
+        #                 containing_list = doc_list
+        #             else:
+        #                 containing_list = list(set(containing_list) & set(doc_list))
+        #
+        # else:
+        #     print("here")
+        #     if len(processed_query_list) == 1:
+        #         containing_list = self.process_one_word_query(processed_query_list, inverted_index_dict)
+        #
+        #     if phrase_part_query == '':
+        #         if len(processed_query_list) > 1:
+        #             containing_list = self.process_multi_word_query(processed_query_list, inverted_index_dict)
+        #     if (phrase_part_query != '') and (len(phrase_part_query[0].split()) > 1):
+        #         print(phrase_part_query[0].split())
+        #         print("in phrase")
+        #         containing_list = self.process_two_word_phrase_query(processed_query_list, inverted_index_dict)
         if not_query_word != '':
             containing_list = self.process_not_query(not_query_word, inverted_index_dict, containing_list)
+            print(containing_list)
 
         return containing_list
 

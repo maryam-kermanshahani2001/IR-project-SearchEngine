@@ -27,7 +27,7 @@ class InvertedIndex:
             #     if flag <= 505:
             #         flag += 1
             #         continue
-            #     if flag >= 1001:
+            #     if flag >= 1000:
             #         break
                 # print(k)
                 # print(data[k])
@@ -99,12 +99,12 @@ class InvertedIndex:
         print("")
         print("------------------------------***************--------------------------------------------")
         print("")
-        plot = Plot(contents)
-        plot.paint_zipf_plot()
-        plot.heaps_law_without_stemming()
-        plot.heaps_law_with_stemming()
+        # plot = Plot(contents)
+        # plot.paint_zipf_plot()
+        # plot.heaps_law_without_stemming()
+        # plot.heaps_law_with_stemming()
 
-        return sorted_main_dictionary
+        return sorted_main_dictionary, contents, urls
 
 # ii = InvertedIndex()
 # ii.execute()
